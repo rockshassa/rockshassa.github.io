@@ -4,7 +4,7 @@
  <title>Rockshassa</title>
  <link href="http://rockshassa.com/atom.xml" rel="self"/>
  <link href="http://rockshassa.com/"/>
- <updated>2015-06-26T12:49:30-04:00</updated>
+ <updated>2015-06-26T13:15:50-04:00</updated>
  <id>http://rockshassa.com</id>
  <author>
    <name>Nick Galasso</name>
@@ -17,11 +17,13 @@
    <link href="http://rockshassa.com/2015/06/26/First-Post/"/>
    <updated>2015-06-26T00:00:00-04:00</updated>
    <id>http://rockshassa.com/2015/06/26/First-Post</id>
-   <content type="html">&lt;p&gt;Welcome to the personal webite of me, &lt;a href=&quot;http://stackoverflow.com/users/1825103/nick&quot;&gt;Nick Galasso&lt;/a&gt;&lt;/p&gt;
+   <content type="html">&lt;h2 id=&quot;palmsassetspalmsjpg&quot;&gt;&lt;img src=&quot;/assets/palms.jpg&quot; alt=&quot;palms&quot; /&gt;&lt;/h2&gt;
+
+&lt;p&gt;Welcome to the personal webite of me, &lt;a href=&quot;http://stackoverflow.com/users/1825103/nick&quot;&gt;Nick Galasso&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;I’m an iOS Developer based in &lt;a href=&quot;https://www.google.com/maps/place/Brooklyn,+NY/@40.645244,-73.9449975,11z/data=!3m1!4b1!4m2!3m1!1s0x89c24416947c2109:0x82765c7404007886&quot;&gt;Brooklyn, NY&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;This site is built using &lt;a href=&quot;https://github.com/poole/poole&quot;&gt;Poole&lt;/a&gt;, which is wrapper around the static-site generator &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;This site is built using &lt;a href=&quot;https://github.com/poole/poole&quot;&gt;Poole&lt;/a&gt;, a butler for the static-site generator &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt;&lt;/p&gt;
 
 &lt;hr /&gt;
 </content>

@@ -6,7 +6,7 @@ relative_permalinks: true
 
 # Setup
 title:               Rockshassa
-tagline:             
+tagline:             such code. wow.
 url:                 http://rockshassa.com
 paginate:            1
 baseurl:             ""

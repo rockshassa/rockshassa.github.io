@@ -4,7 +4,7 @@
  <title>rockshassa</title>
  <link href="http://rockshassa.com/atom.xml" rel="self"/>
  <link href="http://rockshassa.com/"/>
- <updated>2015-06-27T18:20:49-04:00</updated>
+ <updated>2015-06-27T19:08:48-04:00</updated>
  <id>http://rockshassa.com</id>
  <author>
    <name>Nick Galasso</name>
@@ -13,21 +13,22 @@
 
  
  <entry>
-   <title>iOS Metaprogramming with Python</title>
+   <title>iOS Meta-programming with Python</title>
    <link href="http://rockshassa.com/2015/06/27/iOS-Metaprogramming/"/>
    <updated>2015-06-27T00:00:00-04:00</updated>
    <id>http://rockshassa.com/2015/06/27/iOS-Metaprogramming</id>
-   <content type="html">&lt;hr /&gt;
+   <content type="html">&lt;hr&gt;
 
-&lt;h2 id=&quot;movin-out&quot;&gt;movin’ out&lt;/h2&gt;
+&lt;h2&gt;movin&amp;#39; out&lt;/h2&gt;
 
-&lt;p&gt;There comes a time in every configuration’s life when it must grow up and make its way out of the source code of your application. For many iOS and OS X apps, a .plist file is a suitable place to store configuration info.&lt;/p&gt;
+&lt;p&gt;There comes a time in every configuration&amp;#39;s life when it must grow up and make its way out of the source code of your application. For many iOS and OS X apps, a .plist file is a suitable place to store configuration info. &lt;/p&gt;
 
 &lt;p&gt;Inside Xcode, that .plist may look similar to this:&lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/iOS Metaprogramming/xcodeplist.png&quot; alt=&quot;xcodeplist&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/iOS%20Metaprogramming/xcodeplist.png&quot; alt=&quot;xcodeplist&quot;&gt;&lt;/p&gt;
 
-&lt;hr /&gt;
+&lt;hr&gt;
+
 &lt;p&gt;And the Swift code you use to access those values might look something like this:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-swift&quot; data-lang=&quot;swift&quot;&gt;&lt;span class=&quot;lineno&quot;&gt; 1&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;let&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;bundle&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;bp&quot;&gt;NSBundle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;mainBundle&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
@@ -46,21 +47,21 @@
 &lt;p&gt;Storing configuration info in the .plist is nice for a few reasons:&lt;/p&gt;
 
 &lt;ul&gt;
-  &lt;li&gt;Configuration changes are safer than code changes&lt;/li&gt;
-  &lt;li&gt;If we have multiple environments to point at, this gives us a single place to make those changes&lt;/li&gt;
-  &lt;li&gt;Abstracting out the configuration gives us a strong incentive to remove configuration-specific logic from the app&lt;/li&gt;
-  &lt;li&gt;.Plists are easy read and modify, in the event we want to automate the build of the app&lt;/li&gt;
+&lt;li&gt;Configuration changes are safer than code changes&lt;/li&gt;
+&lt;li&gt;If we have multiple environments to point at, this gives us a single place to make those changes&lt;/li&gt;
+&lt;li&gt;Abstracting out the configuration gives us a strong incentive to remove configuration-specific logic from the app&lt;/li&gt;
+&lt;li&gt;.Plists are easy read and modify, in the event we want to automate the build of the app&lt;/li&gt;
 &lt;/ul&gt;
 
-&lt;h2 id=&quot;dont-just-stand-there-automate&quot;&gt;don’t just stand there, &lt;em&gt;automate!&lt;/em&gt;&lt;/h2&gt;
+&lt;h2&gt;don&amp;#39;t just stand there, &lt;em&gt;automate!&lt;/em&gt;&lt;/h2&gt;
 
-&lt;p&gt;When deploying iOS applications for internal testing, we often need to build for several configurations. In this example, suppose we need to point at three different APIs, in this case named ‘Dev’, ‘Staging’, and ‘Production’.&lt;/p&gt;
+&lt;p&gt;When deploying iOS applications for internal testing, we often need to build for several configurations. In this example, suppose we need to point at three different APIs, in this case named &amp;#39;Dev&amp;#39;, &amp;#39;Staging&amp;#39;, and &amp;#39;Production&amp;#39;. &lt;/p&gt;
 
-&lt;p&gt;Let’s assume that we’re using &lt;a href=&quot;https://jenkins-ci.org/&quot;&gt;Jenkins&lt;/a&gt; as our CI tool. We can build a python script that rewrites our .plist info, and invoke that script easily from Jenkins. We can specify our desired environment by passing it as a command line parameter. Our goal is to be able to set a new configuration simply by writing a bash command like:&lt;/p&gt;
+&lt;p&gt;Let&amp;#39;s assume that we&amp;#39;re using &lt;a href=&quot;https://jenkins-ci.org/&quot;&gt;Jenkins&lt;/a&gt; as our CI tool. We can build a python script that rewrites our .plist info, and invoke that script easily from Jenkins. We can specify our desired environment by passing it as a command line parameter. Our goal is to be able to set a new configuration simply by writing a bash command like:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-bash&quot; data-lang=&quot;bash&quot;&gt;python write_settings.py Production&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;h2 id=&quot;getting-started&quot;&gt;getting started&lt;/h2&gt;
+&lt;h2&gt;getting started&lt;/h2&gt;
 
 &lt;p&gt;Create a file named write_settings.py and place it in the same folder that contains your configuration .plist. Now we can get started:&lt;/p&gt;
 
@@ -70,68 +71,70 @@
 &lt;span class=&quot;kn&quot;&gt;import&lt;/span&gt; &lt;span class=&quot;nn&quot;&gt;plistlib&lt;/span&gt;
 
 &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;__name__&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;quot;__main__&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;span class=&quot;n&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;First, we import the libraries we’ll be using in this script. Then, we write an “ifmain”, the purpose of which is explained nicely &lt;a href=&quot;http://stackoverflow.com/questions/419163/what-does-if-name-main-do&quot;&gt;here on Stack Overflow&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;First, we import the libraries we&amp;#39;ll be using in this script. Then, we write an &amp;quot;ifmain&amp;quot;, the purpose of which is explained nicely &lt;a href=&quot;http://stackoverflow.com/questions/419163/what-does-if-name-main-do&quot;&gt;here on Stack Overflow&lt;/a&gt;.&lt;/p&gt;
 
-&lt;p&gt;That if statement will be evaluated as True when the script is invoked directly via command line. At that point, we immediately invoke main(). Let’s implement that next:&lt;/p&gt;
+&lt;p&gt;That if statement will be evaluated as True when the script is invoked directly via command line. At that point, we immediately invoke main(). Let&amp;#39;s implement that next:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;main&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;():&lt;/span&gt;
 
-	&lt;span class=&quot;c&quot;&gt;#grab our command line parameter&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;environment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;#grab our command line parameter&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;environment&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sys&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;argv&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pop&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt;
 
-	&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;CustomSettings.plist&amp;#39;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;CustomSettings.plist&amp;#39;&lt;/span&gt;
 
-	&lt;span class=&quot;c&quot;&gt;#read the config into memory&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plistlib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;readPlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;#read the config into memory&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plistlib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;readPlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
-	&lt;span class=&quot;c&quot;&gt;#edit the configuration&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;editPlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    &lt;span class=&quot;c&quot;&gt;#edit the configuration&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;editPlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;environment&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
 
-	&lt;span class=&quot;c&quot;&gt;#delete the old copy of the .plist&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;remove&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	
-	&lt;span class=&quot;c&quot;&gt;#write our new one in its place&lt;/span&gt;
-	&lt;span class=&quot;n&quot;&gt;plistlib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;writePlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;span class=&quot;c&quot;&gt;#delete the old copy of the .plist&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;os&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;remove&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    
+    &lt;span class=&quot;c&quot;&gt;#write our new one in its place&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;plistlib&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;writePlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;path&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;This code is fairly straightforward, except that we haven’t implemented editPlist(plist,environment) yet. Lets do that next:&lt;/p&gt;
+&lt;p&gt;This code is fairly straightforward, except that we haven&amp;#39;t implemented editPlist(plist,environment) yet. Lets do that next:&lt;/p&gt;
 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-python&quot; data-lang=&quot;python&quot;&gt;&lt;span class=&quot;k&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;nf&quot;&gt;editPlist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;):&lt;/span&gt;
 
-	&lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;https://{}.rockshassa.com&amp;#39;&lt;/span&gt;
+    &lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;https://{}.rockshassa.com&amp;#39;&lt;/span&gt;
 
-	&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;Dev&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;dev&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;443&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;Staging&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;staging&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9001&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;Production&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;prod&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-		&lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;123&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-		&lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;invalid environment specified: &amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
-	
-	&lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;ServerURL&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;
-		&lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;Port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
-			&lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;Dev&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;dev&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;443&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;Staging&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;staging&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;9001&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;Production&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;fmt&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;format&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;prod&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;123&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;nb&quot;&gt;exit&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s&quot;&gt;&amp;#39;invalid environment specified: &amp;#39;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;+&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;env&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+    
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;ow&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;ServerURL&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;server&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;elif&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;key&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;s&quot;&gt;&amp;#39;Port&amp;#39;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;
+            &lt;span class=&quot;n&quot;&gt;plist&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;key&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;port&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
-&lt;p&gt;This performs the edit of the plist according to the environment parameter we provided when invoking the script. If we passed in an unrecognized parameter (or &lt;em&gt;no&lt;/em&gt; parameter), the script will abort, providing an explanation why.&lt;/p&gt;
+&lt;p&gt;This performs the edit of the plist according to the environment parameter we provided when invoking the script. If we passed in an unrecognized parameter (or &lt;em&gt;no&lt;/em&gt; parameter), the script will abort, providing an explanation why. &lt;/p&gt;
 
-&lt;h2 id=&quot;putting-it-all-together&quot;&gt;putting it all together&lt;/h2&gt;
+&lt;h2&gt;putting it all together&lt;/h2&gt;
 
-&lt;p&gt;A full gist of the python script, with more verbose logging is available &lt;a href=&quot;https://gist.github.com/rockshassa/b45edf149479b357c57f&quot;&gt;here&lt;/a&gt;. The additional logging is useful when viewing console logs from Jenkins. Now, all we need to do is invoke this script before running our xcodebuild command. The invocation and subsequent output of the gist script should look like so:&lt;/p&gt;
+&lt;p&gt;A full gist of the python script, with more verbose logging is available &lt;a href=&quot;https://gist.github.com/rockshassa/b45edf149479b357c57f&quot;&gt;here&lt;/a&gt;. The additional logging is useful when viewing console logs from Jenkins. Now, all we need to do is invoke this script before running our xcodebuild command. &lt;/p&gt;
 
-&lt;p&gt;&lt;img src=&quot;/assets/iOS Metaprogramming/plistlogging.png&quot; alt=&quot;xcodeplist&quot; /&gt;&lt;/p&gt;
+&lt;p&gt;The invocation and subsequent output of the gist script should look like so:&lt;/p&gt;
 
-&lt;p&gt;And thats it!&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/assets/iOS%20Metaprogramming/plistlogging.png&quot; alt=&quot;xcodeplist&quot;&gt;&lt;/p&gt;
 
-&lt;p&gt;This example is is a simple one, but method behind it can scale to handle other kinds of configuration information too. I’ve used it successfully to impement configs for feature toggles, URLs, ports, branding information, API keys, and even request headers.&lt;/p&gt;
+&lt;p&gt;And thats it! &lt;/p&gt;
 
-&lt;p&gt;After some practice, I hope you’ll find that abstracting out configuration data in this way leads to more flexible, maintainable, and testable applications.&lt;/p&gt;
+&lt;p&gt;This example is is a simple one, but method behind it can scale to handle other kinds of configuration information too. I&amp;#39;ve used it successfully to impement configs for feature toggles, URLs, ports, branding information, API keys, and even request headers. &lt;/p&gt;
+
+&lt;p&gt;After some practice, I hope you&amp;#39;ll find that abstracting out configuration data in this way leads to more flexible, maintainable, and testable applications. &lt;/p&gt;
 </content>
  </entry>
  
@@ -140,21 +143,21 @@
    <link href="http://rockshassa.com/2015/06/26/First-Post/"/>
    <updated>2015-06-26T00:00:00-04:00</updated>
    <id>http://rockshassa.com/2015/06/26/First-Post</id>
-   <content type="html">&lt;h2 id=&quot;palmsassetspalmsjpg&quot;&gt;&lt;img src=&quot;/assets/palms.jpg&quot; alt=&quot;palms&quot; /&gt;&lt;/h2&gt;
+   <content type="html">&lt;h2&gt;&lt;img src=&quot;/assets/palms.jpg&quot; alt=&quot;palms&quot;&gt;&lt;/h2&gt;
 
 &lt;p&gt;Welcome to the personal webite of me, &lt;a href=&quot;http://stackoverflow.com/users/1825103/nick&quot;&gt;Nick Galasso&lt;/a&gt;&lt;/p&gt;
 
-&lt;p&gt;I’m an iOS Developer based in &lt;a href=&quot;https://www.google.com/maps/place/Brooklyn,+NY/@40.645244,-73.9449975,11z/data=!3m1!4b1!4m2!3m1!1s0x89c24416947c2109:0x82765c7404007886&quot;&gt;Brooklyn, NY&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I&amp;#39;m an iOS Developer based in &lt;a href=&quot;https://www.google.com/maps/place/Brooklyn,+NY/@40.645244,-73.9449975,11z/data=!3m1!4b1!4m2!3m1!1s0x89c24416947c2109:0x82765c7404007886&quot;&gt;Brooklyn, NY&lt;/a&gt;&lt;/p&gt;
 
 &lt;p&gt;I built this site using &lt;a href=&quot;https://github.com/poole/poole&quot;&gt;Poole&lt;/a&gt;, a butler for the static-site generator &lt;a href=&quot;http://jekyllrb.com/&quot;&gt;Jekyll&lt;/a&gt;&lt;/p&gt;
 
-&lt;hr /&gt;
+&lt;hr&gt;
 
 &lt;!-- 
 &lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-objc&quot; data-lang=&quot;objc&quot;&gt;&lt;span class=&quot;c1&quot;&gt;//code block example&lt;/span&gt;
 
 &lt;span class=&quot;p&quot;&gt;-(&lt;/span&gt;&lt;span class=&quot;kt&quot;&gt;BOOL&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nf&quot;&gt;someGarbage:&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;bp&quot;&gt;NSUInteger&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;nv&quot;&gt;someInt&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-	&lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;YES&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;nb&quot;&gt;YES&lt;/span&gt;
 &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
 
  --&gt;

@@ -1,6 +1,6 @@
 ---
 layout: post
-title: iOS Metaprogramming with Python
+title: iOS Meta-programming with Python
 tags:
 - python
 - swift

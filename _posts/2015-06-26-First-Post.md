@@ -1,6 +1,10 @@
 ---
 layout: post
 title: First Post
+tags:
+- jekyll
+- me
+- poole
 ---
 ![palms](/assets/palms.jpg)
 -----

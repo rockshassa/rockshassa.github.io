@@ -137,7 +137,9 @@ This performs the edit of the plist according to the environment parameter we pr
 putting it all together
 -------
 
-A full gist of the python script, with more verbose logging is available [here](https://gist.github.com/rockshassa/b45edf149479b357c57f). The additional logging is useful when viewing console logs from Jenkins. Now, all we need to do is invoke this script before running our xcodebuild command. The invocation and subsequent output of the gist script should look like so:
+A full gist of the python script, with more verbose logging is available [here](https://gist.github.com/rockshassa/b45edf149479b357c57f). The additional logging is useful when viewing console logs from Jenkins. Now, all we need to do is invoke this script before running our xcodebuild command. 
+
+The invocation and subsequent output of the gist script should look like so:
 
 ![xcodeplist](/assets/iOS Metaprogramming/plistlogging.png)
 

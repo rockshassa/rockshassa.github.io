@@ -12,3 +12,13 @@ I'm an iOS Developer based in [Brooklyn, NY](https://www.google.com/maps/place/B
 I built this site using [Poole](https://github.com/poole/poole), a butler for the static-site generator [Jekyll](http://jekyllrb.com/)
 
 -----
+
+<!-- {% highlight objc %}
+
+//code block example
+
+-(BOOL)someGarbage:(NSUInteger)someInt{
+	return YES
+}
+{% endhighlight %}
+ -->

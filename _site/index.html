@@ -32,6 +32,16 @@
 
   <body class="theme-base-0f">
 
+  	<script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script>
+    $(document).ready(function(){
+    var objArray = ["theme-base-0b","theme-base-0d","theme-base-0c","theme-base-0e","theme-base-0f","theme-base-09","theme-base-08"];
+    var $randomClassToShow = objArray[Math.floor(Math.random()*objArray.length)];
+      $("body").removeClass();
+      $("body").addClass($randomClassToShow);
+    });
+    </script>
+
     <div class="sidebar">
   <div class="container sidebar-sticky">
     <div class="sidebar-about">

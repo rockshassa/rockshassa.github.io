@@ -1,6 +1,6 @@
 ---
 layout: post
-title: iOS Meta-programming with Python
+title: iOS Metaprogramming with Python
 tags:
 - python
 - swift
@@ -10,8 +10,12 @@ tags:
 
 ----
 
+A metaprogram is a program that accepts other programs as input. In this post, we'll write a small python application that accepts your project's configuration plist as input, in order to change your application's behavior at runtime.
+
+
 movin' out
 ----------
+
 
 There comes a time in every configuration's life when it must grow up and make its way out of the source code of your application. For many iOS and OS X apps, a .plist file is a suitable place to store configuration info. 
 
@@ -24,7 +28,7 @@ Inside Xcode, that .plist may look similar to this:
 And the Swift code you use to access those values might look something like this:
 
 
-{% highlight swift linenos %}
+{% highlight swift %}
 
 let bundle = NSBundle.mainBundle()
         

@@ -97,13 +97,15 @@
   <div class="post">
     <h1 class="post-title">
       <a href="/2015/06/27/iOS-Metaprogramming/">
-        iOS Meta-programming with Python
+        iOS Metaprogramming with Python
       </a>
     </h1>
 
     <span class="post-date">27 Jun 2015</span>
 
     <hr>
+
+<p>A metaprogram is a program that accepts other programs as input. In this post, we&#39;ll write a small python application that accepts your project&#39;s configuration plist as input, in order to change your application&#39;s behavior at runtime.</p>
 
 <h2>movin&#39; out</h2>
 
@@ -117,18 +119,18 @@
 
 <p>And the Swift code you use to access those values might look something like this:</p>
 
-<div class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="lineno"> 1</span> <span class="k">let</span> <span class="n">bundle</span> <span class="o">=</span> <span class="bp">NSBundle</span><span class="p">.</span><span class="n">mainBundle</span><span class="p">()</span>
-<span class="lineno"> 2</span>         
-<span class="lineno"> 3</span> <span class="k">if</span> <span class="k">let</span> <span class="n">path</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">.</span><span class="n">pathForResource</span><span class="p">(</span><span class="s">&quot;CustomSettings&quot;</span><span class="p">,</span> <span class="nl">ofType</span><span class="p">:</span> <span class="s">&quot;plist&quot;</span><span class="p">)</span> <span class="p">{</span>
-<span class="lineno"> 4</span>     
-<span class="lineno"> 5</span>     <span class="k">if</span> <span class="k">let</span> <span class="n">dict</span> <span class="o">=</span> <span class="bp">NSDictionary</span><span class="p">(</span><span class="nl">contentsOfFile</span><span class="p">:</span> <span class="n">path</span><span class="p">)</span> <span class="p">{</span>
-<span class="lineno"> 6</span> 
-<span class="lineno"> 7</span>         <span class="c1">//note that serverURL and port are optional values        </span>
-<span class="lineno"> 8</span>         <span class="k">let</span> <span class="n">serverURL</span> <span class="o">=</span> <span class="n">dict</span><span class="p">[</span><span class="s">&quot;ServerURL&quot;</span><span class="p">]</span>
-<span class="lineno"> 9</span>         <span class="k">let</span> <span class="n">port</span> <span class="o">=</span> <span class="n">dict</span><span class="p">[</span><span class="s">&quot;Port&quot;</span><span class="p">]</span>
-<span class="lineno">10</span>         <span class="n">print</span><span class="p">(</span><span class="n">serverURL</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-<span class="lineno">11</span>     <span class="p">}</span>
-<span class="lineno">12</span> <span class="p">}</span></code></pre></div>
+<div class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="n">bundle</span> <span class="o">=</span> <span class="bp">NSBundle</span><span class="p">.</span><span class="n">mainBundle</span><span class="p">()</span>
+        
+<span class="k">if</span> <span class="k">let</span> <span class="n">path</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">.</span><span class="n">pathForResource</span><span class="p">(</span><span class="s">&quot;CustomSettings&quot;</span><span class="p">,</span> <span class="nl">ofType</span><span class="p">:</span> <span class="s">&quot;plist&quot;</span><span class="p">)</span> <span class="p">{</span>
+    
+    <span class="k">if</span> <span class="k">let</span> <span class="n">dict</span> <span class="o">=</span> <span class="bp">NSDictionary</span><span class="p">(</span><span class="nl">contentsOfFile</span><span class="p">:</span> <span class="n">path</span><span class="p">)</span> <span class="p">{</span>
+
+        <span class="c1">//note that serverURL and port are optional values        </span>
+        <span class="k">let</span> <span class="n">serverURL</span> <span class="o">=</span> <span class="n">dict</span><span class="p">[</span><span class="s">&quot;ServerURL&quot;</span><span class="p">]</span>
+        <span class="k">let</span> <span class="n">port</span> <span class="o">=</span> <span class="n">dict</span><span class="p">[</span><span class="s">&quot;Port&quot;</span><span class="p">]</span>
+        <span class="n">print</span><span class="p">(</span><span class="n">serverURL</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
 
 <p>Storing configuration info in the .plist is nice for a few reasons:</p>
 

@@ -8,9 +8,16 @@ tags:
 - code
 ---
 
+
+so meta
 ----
 
 A metaprogram is a program that accepts other programs as input. In this post, we'll write a small python application that accepts your project's configuration plist as input, in order to change your application's behavior at runtime.
+
+This is just one possible solution to a very common use case: pointing your app at different API environments.
+
+
+----
 
 
 movin' out
@@ -48,7 +55,7 @@ if let path = bundle.pathForResource("CustomSettings", ofType: "plist") {
 Storing configuration info in the .plist is nice for a few reasons:
 
 * Configuration changes are safer than code changes
-* If we have multiple environments to point at, this gives us a single place to make those changes
+* If we have multiple environments to point at, this gives us a single place handle that
 * Abstracting out the configuration gives us a strong incentive to remove configuration-specific logic from the app
 * .Plists are easy read and modify, in the event we want to automate the build of the app
 
@@ -60,7 +67,7 @@ When deploying iOS applications for internal testing, we often need to build for
 
 Let's assume that we're using [Jenkins](https://jenkins-ci.org/) as our CI tool. We can build a python script that rewrites our .plist info, and invoke that script easily from Jenkins. We can specify our desired environment by passing it as a command line parameter. Our goal is to be able to set a new configuration simply by writing a bash command like:
 {% highlight bash %}
-python write_settings.py Production
+$ python write_settings.py Production
 {% endhighlight %}
 
 getting started

@@ -103,9 +103,13 @@
 
     <span class="post-date">27 Jun 2015</span>
 
-    <hr>
+    <h2>so meta</h2>
 
 <p>A metaprogram is a program that accepts other programs as input. In this post, we&#39;ll write a small python application that accepts your project&#39;s configuration plist as input, in order to change your application&#39;s behavior at runtime.</p>
+
+<p>This is just one possible solution to a very common use case: pointing your app at different API environments.</p>
+
+<hr>
 
 <h2>movin&#39; out</h2>
 
@@ -136,7 +140,7 @@
 
 <ul>
 <li>Configuration changes are safer than code changes</li>
-<li>If we have multiple environments to point at, this gives us a single place to make those changes</li>
+<li>If we have multiple environments to point at, this gives us a single place handle that</li>
 <li>Abstracting out the configuration gives us a strong incentive to remove configuration-specific logic from the app</li>
 <li>.Plists are easy read and modify, in the event we want to automate the build of the app</li>
 </ul>
@@ -147,7 +151,7 @@
 
 <p>Let&#39;s assume that we&#39;re using <a href="https://jenkins-ci.org/">Jenkins</a> as our CI tool. We can build a python script that rewrites our .plist info, and invoke that script easily from Jenkins. We can specify our desired environment by passing it as a command line parameter. Our goal is to be able to set a new configuration simply by writing a bash command like:</p>
 
-<div class="highlight"><pre><code class="language-bash" data-lang="bash">python write_settings.py Production</code></pre></div>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>python write_settings.py Production</code></pre></div>
 
 <h2>getting started</h2>
 

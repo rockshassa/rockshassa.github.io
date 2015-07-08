@@ -1,7 +1,8 @@
 ---
 layout: post
-title: iOS Metaprogramming with Python
+title: iOS Metaprogramming with Python, Pt 1
 tags:
+- metaprogramming
 - python
 - swift
 - xcode
@@ -29,7 +30,7 @@ There comes a time in every configuration's life when it must grow up and make i
 Inside Xcode, that .plist may look similar to this:
 
 
-![xcodeplist](/assets/iOS Metaprogramming/xcodeplist.png)
+![xcodeplist](/assets/2015-06-27/xcodeplist.png)
 
 ----
 And the Swift code you use to access those values might look something like this:
@@ -152,7 +153,7 @@ A full gist of the python script, with more verbose logging is available [here](
 
 The invocation and subsequent output of the gist script should look like so:
 
-![xcodeplist](/assets/iOS Metaprogramming/plistlogging.png)
+![xcodeplist](/assets/2015-06-27/plistlogging.png)
 
 
 And thats it! 
@@ -160,3 +161,7 @@ And thats it!
 This example is is a simple one, but method behind it can scale to handle other kinds of configuration information too. I've used it successfully to impement configs for feature toggles, URLs, ports, branding information, API keys, and even request headers. 
 
 After some practice, I hope you'll find that abstracting out configuration data in this way leads to more flexible, maintainable, and testable applications. 
+
+___full gist___
+
+{% gist b45edf149479b357c57f %}

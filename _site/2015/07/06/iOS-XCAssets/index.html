@@ -110,7 +110,7 @@ Consider FooApp, an an iPhone-only iOS application. </p>
 
 <h2>brazen disregard for my time</h2>
 
-<p>Xcode wants us to provide 3 different sizes of icons, at 2 different scales, for a total of 6 assets that a designer (or me) needs to cut. An app that also supported iPad would require even more assets. </p>
+<p>Xcode wants us to provide 3 different sizes of icons, at 2 different scales, for a total of 6 assets that a designer (or in this case, me) needs to cut. An app that also supported iPad would require even more assets. </p>
 
 <p>In a manual process, I need to:</p>
 
@@ -148,6 +148,89 @@ Consider FooApp, an an iPhone-only iOS application. </p>
     <span class="k">return</span></code></pre></div>
 
 <p>Sure enough, this produced a png named &#39;new_img&#39;. I opened it up and verified the correct dimensions (120x120px in this case) and that the image quality had not degraded too drastically. Everything looks good, so the &quot;image&quot; portion of our task is essentially done. </p>
+
+<h2>what is an XCAsset?</h2>
+
+<p>When Xcode deals with the images in your project, it prefers to think of them as XCAssets. From XCode&#39;s perspective, our &quot;App Icon&quot; is a single object, with 6 separate representations. The appropriate representation can be determined at runtime, based on the OS and Device you need to draw the icon for.</p>
+
+<p>XCode stores the metadata for these asset files in a file called Contents.json. The JSON for the doge icon in the screenshot above looks like:</p>
+
+<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span>
+    <span class="nt">&quot;images&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_60_3x.png&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;3x&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;60x60&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_60_2x.png&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;2x&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;60x60&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_40_3x.png&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;3x&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;40x40&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_40_2x.png&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;2x&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;40x40&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_29_3x.png&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;3x&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;29x29&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_29_2x.png&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;2x&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;29x29&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="nt">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="nt">&quot;author&quot;</span><span class="p">:</span> <span class="s2">&quot;xcode&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="mi">1</span>
+    <span class="p">}</span>
+<span class="p">}</span></code></pre></div>
+
+<p>If we&#39;re going to automate the insertion of our images into Xcode and eliminate the &quot;drag and drop&quot; step of the process, we&#39;re going to need to be able to generate a compatible JSON file. A nice object-oriented way of doing this is to create a data model for the &quot;slice&quot; objects in python. Then we just need to give those slices a way to output a JSON representation of themselves. The data model may look like this:</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">XCAsset</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">idiom</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">idiom</span> <span class="o">=</span> <span class="n">idiom</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span></code></pre></div>
+
+<p>The initializer expects 5 arguments, although we are only going to pass it 4. 
+The first argument, &#39;self&#39; is passed implicitly. The remaining ones are size, scale, idiom and filename. These correspond to the properties in the above JSON. </p>
+
+<p>Before we go off and code the to_json() method, it might be helpful to figure out how we want to initialize our Slice objects. A simple way to test our model is to initialize 6 Slices, with the same size/scale/idiom attributes that Xcode expects. We&#39;ll know the filename at runtime because we&#39;ll be creating the images, so we do not need to mimic that property.</p>
+
+<p>Initializing those objects programatically may look like:</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">generate_assets</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+    <span class="n">iphone</span> <span class="o">=</span> <span class="s">&#39;iphone&#39;</span>
+    <span class="n">scale2x</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">scale3x</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">assets</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
+            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
+
+            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
+            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
+            
+            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
+            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span>
+            <span class="p">]</span>
+    <span class="k">return</span> <span class="n">assets</span></code></pre></div>
 
 <!-- 
 <div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">fnmatch</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">shutil</span>

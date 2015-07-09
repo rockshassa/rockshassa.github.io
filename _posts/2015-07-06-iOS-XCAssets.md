@@ -23,7 +23,7 @@ Consider FooApp, an an iPhone-only iOS application.
 brazen disregard for my time
 ----------
 
-Xcode wants us to provide 3 different sizes of icons, at 2 different scales, for a total of 6 assets that a designer (or me) needs to cut. An app that also supported iPad would require even more assets. 
+Xcode wants us to provide 3 different sizes of icons, at 2 different scales, for a total of 6 assets that a designer (or in this case, me) needs to cut. An app that also supported iPad would require even more assets. 
 
 In a manual process, I need to:
 
@@ -62,7 +62,101 @@ except IOError:
 
 Sure enough, this produced a png named 'new_img'. I opened it up and verified the correct dimensions (120x120px in this case) and that the image quality had not degraded too drastically. Everything looks good, so the "image" portion of our task is essentially done. 
 
+what is an XCAsset?
+--------------
 
+When Xcode deals with the images in your project, it prefers to think of them as XCAssets. From XCode's perspective, our "App Icon" is a single object, with 6 separate representations. The appropriate representation can be determined at runtime, based on the OS and Device you need to draw the icon for.
+
+XCode stores the metadata for these asset files in a file called Contents.json. The JSON for the doge icon in the screenshot above looks like:
+
+{% highlight json %}
+
+{
+    "images": [
+        {
+            "filename": "doge_60_3x.png",
+            "idiom": "iphone",
+            "scale": "3x",
+            "size": "60x60"
+        },
+        {
+            "filename": "doge_60_2x.png",
+            "idiom": "iphone",
+            "scale": "2x",
+            "size": "60x60"
+        },
+        {
+            "filename": "doge_40_3x.png",
+            "idiom": "iphone",
+            "scale": "3x",
+            "size": "40x40"
+        },
+        {
+            "filename": "doge_40_2x.png",
+            "idiom": "iphone",
+            "scale": "2x",
+            "size": "40x40"
+        },
+        {
+            "filename": "doge_29_3x.png",
+            "idiom": "iphone",
+            "scale": "3x",
+            "size": "29x29"
+        },
+        {
+            "filename": "doge_29_2x.png",
+            "idiom": "iphone",
+            "scale": "2x",
+            "size": "29x29"
+        }
+    ],
+    "info": {
+        "author": "xcode",
+        "version": 1
+    }
+}
+
+{% endhighlight %}
+
+If we're going to automate the insertion of our images into Xcode and eliminate the "drag and drop" step of the process, we're going to need to be able to generate a compatible JSON file. A nice object-oriented way of doing this is to create a data model for the "slice" objects in python. Then we just need to give those slices a way to output a JSON representation of themselves. The data model may look like this:
+
+{% highlight python %}
+
+class XCAsset:
+	def __init__(self,size,scale,idiom,filename):
+		self.size = size
+		self.scale = scale
+		self.idiom = idiom
+		self.filename = filename
+
+{% endhighlight %}
+
+The initializer expects 5 arguments, although we are only going to pass it 4. 
+The first argument, 'self' is passed implicitly. The remaining ones are size, scale, idiom and filename. These correspond to the properties in the above JSON. 
+
+Before we go off and code the to_json() method, it might be helpful to figure out how we want to initialize our Slice objects. A simple way to test our model is to initialize 6 Slices, with the same size/scale/idiom attributes that Xcode expects. We'll know the filename at runtime because we'll be creating the images, so we do not need to mimic that property.
+
+Initializing those objects programatically may look like:
+
+{% highlight python %}
+
+def generate_assets(filename):
+	iphone = 'iphone'
+	scale2x = 2
+	scale3x = 3
+	assets = [
+			XCAsset(60,scale3x,iphone,filename),
+			XCAsset(60,scale2x,iphone,filename),
+
+			XCAsset(40,scale3x,iphone,filename),
+			XCAsset(40,scale2x,iphone,filename),
+			
+			XCAsset(29,scale3x,iphone,filename),
+			XCAsset(29,scale2x,iphone,filename)
+			]
+	return assets
+
+{% endhighlight %}
 
 <!-- {% highlight python %}
 

@@ -13,14 +13,14 @@ tags:
 so offended
 ------------
 
-I recently became so mightily offended by the process of adding an App icon to my Xcode project, that I couldn't bear to move forward without scripting it. I imagine this is the impetus for most automation. 
+I recently became so mightily offended by the process of adding an App icon to my Xcode project, I couldn't bear to move forward without scripting it. One wonders if this is the impetus for all automation. 
 
 To understand why I wanted to automate this, we should first take a look at the current process and see its pain points.
 Consider FooApp, an an iPhone-only iOS application. 
 
 ![such icon](/assets/2015-07-06/oldicon.png)
 
-brazen disregard for my time
+brazen disregard
 ----------
 
 Xcode wants us to provide 3 different sizes of icons, at 2 different scales, for a total of 6 assets that a designer (or in this case, me) needs to cut. An app that also supported iPad would require even more assets. 
@@ -122,7 +122,7 @@ If we're going to automate the insertion of our images into Xcode and eliminate 
 
 {% highlight python %}
 
-class XCAsset:
+class XCAssetImage:
 	def __init__(self,size,scale,idiom,filename):
 		self.size = size
 		self.scale = scale
@@ -145,14 +145,14 @@ def generate_assets(filename):
 	scale2x = 2
 	scale3x = 3
 	assets = [
-			XCAsset(60,scale3x,iphone,filename),
-			XCAsset(60,scale2x,iphone,filename),
+			XCAssetImage(60,scale3x,iphone,filename),
+			XCAssetImage(60,scale2x,iphone,filename),
 
-			XCAsset(40,scale3x,iphone,filename),
-			XCAsset(40,scale2x,iphone,filename),
+			XCAssetImage(40,scale3x,iphone,filename),
+			XCAssetImage(40,scale2x,iphone,filename),
 			
-			XCAsset(29,scale3x,iphone,filename),
-			XCAsset(29,scale2x,iphone,filename)
+			XCAssetImage(29,scale3x,iphone,filename),
+			XCAssetImage(29,scale2x,iphone,filename)
 			]
 	return assets
 

@@ -101,14 +101,14 @@
   <span class="post-date">06 Jul 2015</span>
   <h2>so offended</h2>
 
-<p>I recently became so mightily offended by the process of adding an App icon to my Xcode project, that I couldn&#39;t bear to move forward without scripting it. I imagine this is the impetus for most automation. </p>
+<p>I recently became so mightily offended by the process of adding an App icon to my Xcode project, I couldn&#39;t bear to move forward without scripting it. One wonders if this is the impetus for all automation. </p>
 
 <p>To understand why I wanted to automate this, we should first take a look at the current process and see its pain points.
 Consider FooApp, an an iPhone-only iOS application. </p>
 
 <p><img src="/assets/2015-07-06/oldicon.png" alt="such icon"></p>
 
-<h2>brazen disregard for my time</h2>
+<h2>brazen disregard</h2>
 
 <p>Xcode wants us to provide 3 different sizes of icons, at 2 different scales, for a total of 6 assets that a designer (or in this case, me) needs to cut. An app that also supported iPad would require even more assets. </p>
 
@@ -202,7 +202,7 @@ Consider FooApp, an an iPhone-only iOS application. </p>
 
 <p>If we&#39;re going to automate the insertion of our images into Xcode and eliminate the &quot;drag and drop&quot; step of the process, we&#39;re going to need to be able to generate a compatible JSON file. A nice object-oriented way of doing this is to create a data model for the &quot;slice&quot; objects in python. Then we just need to give those slices a way to output a JSON representation of themselves. The data model may look like this:</p>
 
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">XCAsset</span><span class="p">:</span>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">XCAssetImage</span><span class="p">:</span>
     <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">idiom</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
@@ -221,14 +221,14 @@ The first argument, &#39;self&#39; is passed implicitly. The remaining ones are 
     <span class="n">scale2x</span> <span class="o">=</span> <span class="mi">2</span>
     <span class="n">scale3x</span> <span class="o">=</span> <span class="mi">3</span>
     <span class="n">assets</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
+            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
+            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
 
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
+            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
+            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
             
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span>
+            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
+            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span>
             <span class="p">]</span>
     <span class="k">return</span> <span class="n">assets</span></code></pre></div>
 

@@ -80,10 +80,6 @@
           
         
       
-        
-          
-        
-      
 
       <!-- <a class="sidebar-nav-item" href="/archive/v2.1.0.zip">Download</a> -->
       <!-- <a class="sidebar-nav-item" href="">GitHub project</a> -->
@@ -100,270 +96,141 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/07/06/iOS-XCAssets/">
-        iOS Metaprogramming with Python, Pt 2
+      <a href="/2015/06/27/iOS-Metaprogramming/">
+        iOS Metaprogramming with Python, Pt 1
       </a>
     </h1>
 
-    <span class="post-date">06 Jul 2015</span>
+    <span class="post-date">27 Jun 2015</span>
 
-    <h2>so offended</h2>
+    <h2>so meta</h2>
 
-<p>I recently became so mightily offended by the process of adding an App icon to my Xcode project, I couldn&#39;t bear to move forward without scripting it. One wonders if this is the impetus for all automation. </p>
+<p>A metaprogram is a program that accepts other programs as input. In this post, we&#39;ll write a small python application that accepts your project&#39;s configuration plist as input, in order to change your application&#39;s behavior at runtime.</p>
 
-<p>To understand why I wanted to automate this, we should first take a look at the current process and see its pain points.
-Consider FooApp, an an iPhone-only iOS application. </p>
+<p>This is just one possible solution to a very common use case: pointing your app at different API environments.</p>
 
-<p><img src="/assets/2015-07-06/oldicon.png" alt="such icon"></p>
+<hr>
 
-<h2>brazen disregard</h2>
+<h2>movin&#39; out</h2>
 
-<p>Xcode wants us to provide 3 different sizes of icons, at 2 different scales, for a total of 6 assets that a designer (or in this case, me) needs to cut. An app that also supported iPad would require even more assets. </p>
+<p>There comes a time in every configuration&#39;s life when it must grow up and make its way out of the source code of your application. For many iOS and OS X apps, a .plist file is a suitable place to store configuration info. </p>
 
-<p>In a manual process, I need to:</p>
+<p>Inside Xcode, that .plist may look similar to this:</p>
 
-<ul>
-<li>open up my large (1024x1024) source image</li>
-<li>resize it appropriately for one of the size/scale combinations</li>
-<li>save it with a descriptive name for later identification</li>
-</ul>
+<p><img src="/assets/2015-06-27/xcodeplist.png" alt="xcodeplist"></p>
 
-<p>After repeating the above steps for each of the 6 possibilities, I need to:</p>
+<hr>
 
-<ul>
-<li>locate the new images in Finder</li>
-<li>drag them into the appropirate slot in Xcode</li>
-</ul>
+<p>And the Swift code you use to access those values might look something like this:</p>
 
-<p>This process is tedious enough that it discourages me from iterating through different icon options. It occurred to me that I could probably come up with a way to automate all of this, so long as I have a large source image and the path to my Xcode project.</p>
+<div class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="n">bundle</span> <span class="o">=</span> <span class="bp">NSBundle</span><span class="p">.</span><span class="n">mainBundle</span><span class="p">()</span>
+        
+<span class="k">if</span> <span class="k">let</span> <span class="n">path</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">.</span><span class="n">pathForResource</span><span class="p">(</span><span class="s">&quot;CustomSettings&quot;</span><span class="p">,</span> <span class="nl">ofType</span><span class="p">:</span> <span class="s">&quot;plist&quot;</span><span class="p">)</span> <span class="p">{</span>
+    
+    <span class="k">if</span> <span class="k">let</span> <span class="n">dict</span> <span class="o">=</span> <span class="bp">NSDictionary</span><span class="p">(</span><span class="nl">contentsOfFile</span><span class="p">:</span> <span class="n">path</span><span class="p">)</span> <span class="p">{</span>
 
-<h2>apply python</h2>
-
-<p>First things first, how do we use python to resize an image? A bit of googling led me to <a href="https://python-pillow.github.io/">Pillow</a>, a wrapper/fork for Python Image Library (PIL). It looks like the Image.thumbnail() function from PIL will give us the result we want. After installing it, I wrote a small script to verify it works:</p>
-
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
-
-<span class="n">source_img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s">&#39;path/to/image&#39;</span><span class="p">)</span>
-<span class="k">try</span><span class="p">:</span>
-    <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="mi">120</span><span class="p">,</span><span class="mi">120</span><span class="p">)</span>
-    <span class="n">source_img</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
-    <span class="n">source_img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="s">&#39;new_img&#39;</span><span class="p">,</span> <span class="s">&quot;PNG&quot;</span><span class="p">)</span>
-    <span class="n">successStr</span> <span class="o">=</span> <span class="s">&#39;created image for size &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
-    <span class="k">print</span> <span class="n">successStr</span>
-<span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-    <span class="n">errStr</span> <span class="o">=</span> <span class="s">&#39;cannot create image for size &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
-    <span class="k">print</span> <span class="n">errStr</span>
-    <span class="k">return</span></code></pre></div>
-
-<p>Sure enough, this produced a png named &#39;new_img&#39;. I opened it up and verified the correct dimensions (120x120px in this case) and that the image quality had not degraded too drastically. Everything looks good, so the &quot;image&quot; portion of our task is essentially done. </p>
-
-<h2>what is an XCAsset?</h2>
-
-<p>When Xcode deals with the images in your project, it prefers to think of them as XCAssets. From XCode&#39;s perspective, our &quot;App Icon&quot; is a single object, with 6 separate representations. The appropriate representation can be determined at runtime, based on the OS and Device you need to draw the icon for.</p>
-
-<p>XCode stores the metadata for these asset files in a file called Contents.json. The JSON for the doge icon in the screenshot above looks like:</p>
-
-<div class="highlight"><pre><code class="language-json" data-lang="json"><span class="p">{</span>
-    <span class="nt">&quot;images&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_60_3x.png&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;3x&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;60x60&quot;</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_60_2x.png&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;2x&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;60x60&quot;</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_40_3x.png&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;3x&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;40x40&quot;</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_40_2x.png&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;2x&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;40x40&quot;</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_29_3x.png&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;3x&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;29x29&quot;</span>
-        <span class="p">},</span>
-        <span class="p">{</span>
-            <span class="nt">&quot;filename&quot;</span><span class="p">:</span> <span class="s2">&quot;doge_29_2x.png&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;idiom&quot;</span><span class="p">:</span> <span class="s2">&quot;iphone&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;scale&quot;</span><span class="p">:</span> <span class="s2">&quot;2x&quot;</span><span class="p">,</span>
-            <span class="nt">&quot;size&quot;</span><span class="p">:</span> <span class="s2">&quot;29x29&quot;</span>
-        <span class="p">}</span>
-    <span class="p">],</span>
-    <span class="nt">&quot;info&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="nt">&quot;author&quot;</span><span class="p">:</span> <span class="s2">&quot;xcode&quot;</span><span class="p">,</span>
-        <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="mi">1</span>
+        <span class="c1">//note that serverURL and port are optional values        </span>
+        <span class="k">let</span> <span class="n">serverURL</span> <span class="o">=</span> <span class="n">dict</span><span class="p">[</span><span class="s">&quot;ServerURL&quot;</span><span class="p">]</span>
+        <span class="k">let</span> <span class="n">port</span> <span class="o">=</span> <span class="n">dict</span><span class="p">[</span><span class="s">&quot;Port&quot;</span><span class="p">]</span>
+        <span class="n">print</span><span class="p">(</span><span class="n">serverURL</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
     <span class="p">}</span>
 <span class="p">}</span></code></pre></div>
 
-<p>If we&#39;re going to automate the insertion of our images into Xcode and eliminate the &quot;drag and drop&quot; step of the process, we&#39;re going to need to be able to generate a compatible JSON file. A nice object-oriented way of doing this is to create a data model for the &quot;slice&quot; objects in python. Then we just need to give those slices a way to output a JSON representation of themselves. The data model may look like this:</p>
+<p>Storing configuration info in the .plist is nice for a few reasons:</p>
 
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">class</span> <span class="nc">XCAssetImage</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">idiom</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">idiom</span> <span class="o">=</span> <span class="n">idiom</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span></code></pre></div>
+<ul>
+<li>Configuration changes are safer than code changes</li>
+<li>If we have multiple environments to point at, this gives us a single place handle that</li>
+<li>Abstracting out the configuration gives us a strong incentive to remove configuration-specific logic from the app</li>
+<li>.Plists are easy read and modify, in the event we want to automate the build of the app</li>
+</ul>
 
-<p>The initializer expects 5 arguments, although we are only going to pass it 4. 
-The first argument, &#39;self&#39; is passed implicitly. The remaining ones are size, scale, idiom and filename. These correspond to the properties in the above JSON. </p>
+<h2>don&#39;t just stand there, <em>automate!</em></h2>
 
-<p>Before we go off and code the to_json() method, it might be helpful to figure out how we want to initialize our Slice objects. A simple way to test our model is to initialize 6 Slices, with the same size/scale/idiom attributes that Xcode expects. We&#39;ll know the filename at runtime because we&#39;ll be creating the images, so we do not need to mimic that property.</p>
+<p>When deploying iOS applications for internal testing, we often need to build for several configurations. In this example, suppose we need to point at three different APIs, in this case named &#39;Dev&#39;, &#39;Staging&#39;, and &#39;Production&#39;. </p>
 
-<p>Initializing those objects programatically may look like:</p>
+<p>Let&#39;s assume that we&#39;re using <a href="https://jenkins-ci.org/">Jenkins</a> as our CI tool. We can build a python script that rewrites our .plist info, and invoke that script easily from Jenkins. We can specify our desired environment by passing it as a command line parameter. Our goal is to be able to set a new configuration simply by writing a bash command like:</p>
 
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">generate_assets</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="n">iphone</span> <span class="o">=</span> <span class="s">&#39;iphone&#39;</span>
-    <span class="n">scale2x</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">scale3x</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="n">assets</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
+<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>python write_settings.py Production</code></pre></div>
 
-            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-            
-            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-            <span class="n">XCAssetImage</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span>
-            <span class="p">]</span>
-    <span class="k">return</span> <span class="n">assets</span></code></pre></div>
+<h2>getting started</h2>
 
-<!-- 
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">fnmatch</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">shutil</span>
-<span class="kn">from</span> <span class="nn">PIL</span> <span class="kn">import</span> <span class="n">Image</span>
+<p>Create a file named write_settings.py and place it in the same folder that contains your configuration .plist. Now we can get started:</p>
 
-<span class="k">class</span> <span class="nc">XCAsset</span><span class="p">:</span>
-    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">scale</span><span class="p">,</span><span class="n">idiom</span><span class="p">,</span><span class="n">filename</span><span class="p">):</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">size</span> <span class="o">=</span> <span class="n">size</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">scale</span> <span class="o">=</span> <span class="n">scale</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">idiom</span> <span class="o">=</span> <span class="n">idiom</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">filename</span> <span class="o">=</span> <span class="n">filename</span><span class="o">+</span><span class="s">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;x.png&#39;</span>
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#intended for python 2.7</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">plistlib</span>
 
-    <span class="k">def</span> <span class="nf">to_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="n">jsonDict</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">jsonDict</span><span class="p">[</span><span class="s">&#39;size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;x&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
-        <span class="n">jsonDict</span><span class="p">[</span><span class="s">&#39;idiom&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">idiom</span>
-        <span class="n">jsonDict</span><span class="p">[</span><span class="s">&#39;filename&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filename</span>
-        <span class="n">jsonDict</span><span class="p">[</span><span class="s">&#39;scale&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">scale</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;x&#39;</span>
-        <span class="c"># print jsonDict</span>
-        <span class="k">return</span> <span class="n">jsonDict</span>
-
-<span class="k">def</span> <span class="nf">emptyDir</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
-    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirs</span><span class="p">,</span> <span class="n">files</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">directory</span><span class="p">):</span>
-        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
-            <span class="n">os</span><span class="o">.</span><span class="n">unlink</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">f</span><span class="p">))</span>
-        <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="n">dirs</span><span class="p">:</span>
-            <span class="n">shutil</span><span class="o">.</span><span class="n">rmtree</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span>
-
-<span class="k">def</span> <span class="nf">findFiles</span><span class="p">(</span><span class="n">projectPath</span><span class="p">):</span>
-    
-    <span class="n">pattern</span> <span class="o">=</span> <span class="s">&#39;AppIcon.appiconset&#39;</span>
-
-    <span class="k">for</span> <span class="n">root</span><span class="p">,</span> <span class="n">dirnames</span><span class="p">,</span> <span class="n">filenames</span> <span class="ow">in</span> <span class="n">os</span><span class="o">.</span><span class="n">walk</span><span class="p">(</span><span class="n">projectPath</span><span class="p">):</span>
-
-        <span class="k">for</span> <span class="n">directory</span> <span class="ow">in</span> <span class="n">dirnames</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">pattern</span> <span class="ow">in</span> <span class="n">directory</span><span class="p">:</span>
-                <span class="k">print</span> <span class="s">&#39;found file&#39;</span>
-                <span class="n">fullPath</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">root</span><span class="p">,</span> <span class="n">directory</span><span class="p">)</span>
-                <span class="k">print</span> <span class="n">fullPath</span>
-                <span class="k">return</span> <span class="n">fullPath</span>
-
-<span class="k">def</span> <span class="nf">makeImage</span><span class="p">(</span><span class="n">source_img</span><span class="p">,</span><span class="n">asset</span><span class="p">):</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">pixels</span> <span class="o">=</span> <span class="n">asset</span><span class="o">.</span><span class="n">size</span><span class="o">*</span><span class="n">asset</span><span class="o">.</span><span class="n">scale</span>
-        <span class="n">size</span> <span class="o">=</span> <span class="p">(</span><span class="n">pixels</span><span class="p">,</span><span class="n">pixels</span><span class="p">)</span>
-        <span class="n">source_img</span><span class="o">.</span><span class="n">thumbnail</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
-        <span class="n">source_img</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">asset</span><span class="o">.</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;PNG&quot;</span><span class="p">)</span>
-        <span class="n">successStr</span> <span class="o">=</span> <span class="s">&#39;created image for size &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
-        <span class="k">print</span> <span class="n">successStr</span>
-    <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
-        <span class="n">errStr</span> <span class="o">=</span> <span class="s">&#39;cannot create image for size &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">size</span><span class="p">)</span>
-        <span class="k">print</span> <span class="n">errStr</span>
-        <span class="k">return</span>
-
-<span class="k">def</span> <span class="nf">generate_assets</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-    <span class="n">iphone</span> <span class="o">=</span> <span class="s">&#39;iphone&#39;</span>
-    <span class="n">scale2x</span> <span class="o">=</span> <span class="mi">2</span>
-    <span class="n">scale3x</span> <span class="o">=</span> <span class="mi">3</span>
-    <span class="n">assets</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">60</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">40</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-            
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">scale3x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">),</span>
-            <span class="n">XCAsset</span><span class="p">(</span><span class="mi">29</span><span class="p">,</span><span class="n">scale2x</span><span class="p">,</span><span class="n">iphone</span><span class="p">,</span><span class="n">filename</span><span class="p">)</span>
-            <span class="p">]</span>
-    <span class="k">return</span> <span class="n">assets</span>
-
-<span class="k">def</span> <span class="nf">writeContents</span><span class="p">(</span><span class="n">assets</span><span class="p">):</span>
-
-    <span class="n">jsonDict</span> <span class="o">=</span> <span class="p">{}</span>
-
-    <span class="n">jsonDict</span><span class="p">[</span><span class="s">&#39;info&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
-                        <span class="s">&#39;version&#39;</span> <span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-                        <span class="s">&#39;author&#39;</span> <span class="p">:</span> <span class="s">&#39;xcode&#39;</span>
-                        <span class="p">}</span>
-
-    <span class="n">images</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">assets</span><span class="p">:</span>
-        <span class="n">images</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">a</span><span class="o">.</span><span class="n">to_json</span><span class="p">())</span>
-
-    <span class="n">jsonDict</span><span class="p">[</span><span class="s">&#39;images&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">images</span>
-
-    <span class="c">#pretty print</span>
-    <span class="k">print</span> <span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">jsonDict</span><span class="p">,</span><span class="n">sort_keys</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span><span class="n">indent</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span><span class="n">separators</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;,&#39;</span><span class="p">,</span> <span class="s">&#39;: &#39;</span><span class="p">))</span>
-
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="s">&#39;Contents.json&#39;</span><span class="p">,</span> <span class="s">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">outfile</span><span class="p">:</span>
-        <span class="n">json</span><span class="o">.</span><span class="n">dump</span><span class="p">(</span><span class="n">jsonDict</span><span class="p">,</span> <span class="n">outfile</span><span class="p">)</span>
-
-<span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-
-    <span class="c">#intended invocation:</span>
-    <span class="c">#python make_images.py &lt;imagename (relative to script location)&gt; &lt;project path&gt;</span>
-    <span class="c">#python make_images.py FooAppIcon2.png /Users/niko/Documents/FooApp</span>
-    <span class="n">argsList</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span>
-
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">argsList</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
-        <span class="nb">exit</span><span class="p">(</span><span class="s">&#39;not enough args&#39;</span><span class="p">)</span>
-
-    <span class="n">path</span> <span class="o">=</span> <span class="n">argsList</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-    <span class="n">imgName</span> <span class="o">=</span> <span class="n">argsList</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-    <span class="n">fileName</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">imgName</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
-
-    <span class="n">source_img</span> <span class="o">=</span> <span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">imgName</span><span class="p">)</span>
-
-    <span class="n">newDir</span> <span class="o">=</span> <span class="n">findFiles</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    <span class="n">emptyDir</span><span class="p">(</span><span class="n">newDir</span><span class="p">)</span>
-    <span class="n">assets</span> <span class="o">=</span> <span class="n">generate_assets</span><span class="p">(</span><span class="n">fileName</span><span class="p">)</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">chdir</span><span class="p">(</span><span class="n">newDir</span><span class="p">)</span>
-
-    <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">assets</span><span class="p">:</span>
-        <span class="n">img</span> <span class="o">=</span> <span class="n">source_img</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
-        <span class="n">makeImage</span><span class="p">(</span><span class="n">img</span><span class="p">,</span><span class="n">a</span><span class="p">)</span>
-
-    <span class="n">writeContents</span><span class="p">(</span><span class="n">assets</span><span class="p">)</span>
-
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
     <span class="n">main</span><span class="p">()</span></code></pre></div>
- -->
+
+<p>First, we import the libraries we&#39;ll be using in this script. Then, we write an &quot;ifmain&quot;, the purpose of which is explained nicely <a href="http://stackoverflow.com/questions/419163/what-does-if-name-main-do">here on Stack Overflow</a>.</p>
+
+<p>That if statement will be evaluated as True when the script is invoked directly via command line. At that point, we immediately invoke main(). Let&#39;s implement that next:</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+
+    <span class="c">#grab our command line parameter</span>
+    <span class="n">environment</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
+
+    <span class="n">path</span> <span class="o">=</span> <span class="s">&#39;CustomSettings.plist&#39;</span>
+
+    <span class="c">#read the config into memory</span>
+    <span class="n">plist</span> <span class="o">=</span> <span class="n">plistlib</span><span class="o">.</span><span class="n">readPlist</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c">#edit the configuration</span>
+    <span class="n">editPlist</span><span class="p">(</span><span class="n">plist</span><span class="p">,</span> <span class="n">environment</span><span class="p">)</span>
+
+    <span class="c">#delete the old copy of the .plist</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    
+    <span class="c">#write our new one in its place</span>
+    <span class="n">plistlib</span><span class="o">.</span><span class="n">writePlist</span><span class="p">(</span><span class="n">plist</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></code></pre></div>
+
+<p>This code is fairly straightforward, except that we haven&#39;t implemented editPlist(plist,environment) yet. Lets do that next:</p>
+
+<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">editPlist</span><span class="p">(</span><span class="n">plist</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
+
+    <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;https://{}.rockshassa.com&#39;</span>
+
+    <span class="k">if</span> <span class="n">env</span> <span class="o">==</span> <span class="s">&#39;Dev&#39;</span><span class="p">:</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;dev&#39;</span><span class="p">)</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="mi">443</span>
+    <span class="k">elif</span> <span class="n">env</span> <span class="o">==</span> <span class="s">&#39;Staging&#39;</span><span class="p">:</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;staging&#39;</span><span class="p">)</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="mi">9001</span>
+    <span class="k">elif</span> <span class="n">env</span> <span class="o">==</span> <span class="s">&#39;Production&#39;</span><span class="p">:</span>
+        <span class="n">server</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;prod&#39;</span><span class="p">)</span>
+        <span class="n">port</span> <span class="o">=</span> <span class="mi">123</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="nb">exit</span><span class="p">(</span><span class="s">&#39;invalid environment specified: &#39;</span> <span class="o">+</span> <span class="n">env</span><span class="p">)</span>
+    
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">plist</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;ServerURL&#39;</span><span class="p">:</span>
+            <span class="n">plist</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">server</span>
+        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;Port&#39;</span><span class="p">:</span>
+            <span class="n">plist</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">port</span></code></pre></div>
+
+<p>This performs the edit of the plist according to the environment parameter we provided when invoking the script. If we passed in an unrecognized parameter (or <em>no</em> parameter), the script will abort, providing an explanation why. </p>
+
+<h2>putting it all together</h2>
+
+<p>A full gist of the python script, with more verbose logging is available <a href="https://gist.github.com/rockshassa/b45edf149479b357c57f">here</a>. The additional logging is useful when viewing console logs from Jenkins. Now, all we need to do is invoke this script before running our xcodebuild command. </p>
+
+<p>The invocation and subsequent output of the gist script should look like so:</p>
+
+<p><img src="/assets/2015-06-27/plistlogging.png" alt="xcodeplist"></p>
+
+<p>And thats it! </p>
+
+<p>This example is is a simple one, but method behind it can scale to handle other kinds of configuration information too. I&#39;ve used it successfully to impement configs for feature toggles, URLs, ports, branding information, API keys, and even request headers. </p>
+
+<p>After some practice, I hope you&#39;ll find that abstracting out configuration data in this way leads to more flexible, maintainable, and testable applications. </p>
 
 <p><strong><em>full gist</em></strong></p>
 
-<script src="https://gist.github.com/a56ffdd77145905fe8fb.js"> </script>
+<script src="https://gist.github.com/b45edf149479b357c57f.js"> </script>
 
   </div>
   

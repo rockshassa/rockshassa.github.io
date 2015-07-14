@@ -80,10 +80,6 @@
           
         
       
-        
-          
-        
-      
 
       <!-- <a class="sidebar-nav-item" href="/archive/v2.1.0.zip">Download</a> -->
       <!-- <a class="sidebar-nav-item" href="">GitHub project</a> -->
@@ -100,141 +96,31 @@
   
   <div class="post">
     <h1 class="post-title">
-      <a href="/2015/06/27/iOS-Metaprogramming/">
-        iOS Metaprogramming with Python, Pt 1
+      <a href="/2015/06/26/First-Post/">
+        First Post
       </a>
     </h1>
 
-    <span class="post-date">27 Jun 2015</span>
+    <span class="post-date">26 Jun 2015</span>
 
-    <h2>so meta</h2>
+    <h2><img src="/assets/palms.jpg" alt="palms"></h2>
 
-<p>A metaprogram is a program that accepts other programs as input. In this post, we&#39;ll write a small python application that accepts your project&#39;s configuration plist as input, in order to change your application&#39;s behavior at runtime.</p>
+<p>Welcome to the personal webite of me, <a href="http://stackoverflow.com/users/1825103/nick">Nick Galasso</a></p>
 
-<p>This is just one possible solution to a very common use case: pointing your app at different API environments.</p>
+<p>I&#39;m an iOS Developer based in <a href="https://www.google.com/maps/place/Brooklyn,+NY/@40.645244,-73.9449975,11z/data=!3m1!4b1!4m2!3m1!1s0x89c24416947c2109:0x82765c7404007886">Brooklyn, NY</a></p>
 
-<hr>
-
-<h2>movin&#39; out</h2>
-
-<p>There comes a time in every configuration&#39;s life when it must grow up and make its way out of the source code of your application. For many iOS and OS X apps, a .plist file is a suitable place to store configuration info. </p>
-
-<p>Inside Xcode, that .plist may look similar to this:</p>
-
-<p><img src="/assets/2015-06-27/xcodeplist.png" alt="xcodeplist"></p>
+<p>I built this site using <a href="https://github.com/poole/poole">Poole</a>, a butler for the static-site generator <a href="http://jekyllrb.com/">Jekyll</a></p>
 
 <hr>
 
-<p>And the Swift code you use to access those values might look something like this:</p>
+<!-- 
+<div class="highlight"><pre><code class="language-objc" data-lang="objc"><span class="c1">//code block example</span>
 
-<div class="highlight"><pre><code class="language-swift" data-lang="swift"><span class="k">let</span> <span class="n">bundle</span> <span class="o">=</span> <span class="bp">NSBundle</span><span class="p">.</span><span class="n">mainBundle</span><span class="p">()</span>
-        
-<span class="k">if</span> <span class="k">let</span> <span class="n">path</span> <span class="o">=</span> <span class="n">bundle</span><span class="p">.</span><span class="n">pathForResource</span><span class="p">(</span><span class="s">&quot;CustomSettings&quot;</span><span class="p">,</span> <span class="nl">ofType</span><span class="p">:</span> <span class="s">&quot;plist&quot;</span><span class="p">)</span> <span class="p">{</span>
-    
-    <span class="k">if</span> <span class="k">let</span> <span class="n">dict</span> <span class="o">=</span> <span class="bp">NSDictionary</span><span class="p">(</span><span class="nl">contentsOfFile</span><span class="p">:</span> <span class="n">path</span><span class="p">)</span> <span class="p">{</span>
-
-        <span class="c1">//note that serverURL and port are optional values        </span>
-        <span class="k">let</span> <span class="n">serverURL</span> <span class="o">=</span> <span class="n">dict</span><span class="p">[</span><span class="s">&quot;ServerURL&quot;</span><span class="p">]</span>
-        <span class="k">let</span> <span class="n">port</span> <span class="o">=</span> <span class="n">dict</span><span class="p">[</span><span class="s">&quot;Port&quot;</span><span class="p">]</span>
-        <span class="n">print</span><span class="p">(</span><span class="n">serverURL</span><span class="p">,</span> <span class="n">port</span><span class="p">)</span>
-    <span class="p">}</span>
+<span class="p">-(</span><span class="kt">BOOL</span><span class="p">)</span><span class="nf">someGarbage:</span><span class="p">(</span><span class="bp">NSUInteger</span><span class="p">)</span><span class="nv">someInt</span><span class="p">{</span>
+    <span class="k">return</span> <span class="nb">YES</span>
 <span class="p">}</span></code></pre></div>
 
-<p>Storing configuration info in the .plist is nice for a few reasons:</p>
-
-<ul>
-<li>Configuration changes are safer than code changes</li>
-<li>If we have multiple environments to point at, this gives us a single place handle that</li>
-<li>Abstracting out the configuration gives us a strong incentive to remove configuration-specific logic from the app</li>
-<li>.Plists are easy read and modify, in the event we want to automate the build of the app</li>
-</ul>
-
-<h2>don&#39;t just stand there, <em>automate!</em></h2>
-
-<p>When deploying iOS applications for internal testing, we often need to build for several configurations. In this example, suppose we need to point at three different APIs, in this case named &#39;Dev&#39;, &#39;Staging&#39;, and &#39;Production&#39;. </p>
-
-<p>Let&#39;s assume that we&#39;re using <a href="https://jenkins-ci.org/">Jenkins</a> as our CI tool. We can build a python script that rewrites our .plist info, and invoke that script easily from Jenkins. We can specify our desired environment by passing it as a command line parameter. Our goal is to be able to set a new configuration simply by writing a bash command like:</p>
-
-<div class="highlight"><pre><code class="language-bash" data-lang="bash"><span class="nv">$ </span>python write_settings.py Production</code></pre></div>
-
-<h2>getting started</h2>
-
-<p>Create a file named write_settings.py and place it in the same folder that contains your configuration .plist. Now we can get started:</p>
-
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="c">#intended for python 2.7</span>
-<span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">sys</span>
-<span class="kn">import</span> <span class="nn">plistlib</span>
-
-<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&quot;__main__&quot;</span><span class="p">:</span>
-    <span class="n">main</span><span class="p">()</span></code></pre></div>
-
-<p>First, we import the libraries we&#39;ll be using in this script. Then, we write an &quot;ifmain&quot;, the purpose of which is explained nicely <a href="http://stackoverflow.com/questions/419163/what-does-if-name-main-do">here on Stack Overflow</a>.</p>
-
-<p>That if statement will be evaluated as True when the script is invoked directly via command line. At that point, we immediately invoke main(). Let&#39;s implement that next:</p>
-
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-
-    <span class="c">#grab our command line parameter</span>
-    <span class="n">environment</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
-
-    <span class="n">path</span> <span class="o">=</span> <span class="s">&#39;CustomSettings.plist&#39;</span>
-
-    <span class="c">#read the config into memory</span>
-    <span class="n">plist</span> <span class="o">=</span> <span class="n">plistlib</span><span class="o">.</span><span class="n">readPlist</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-
-    <span class="c">#edit the configuration</span>
-    <span class="n">editPlist</span><span class="p">(</span><span class="n">plist</span><span class="p">,</span> <span class="n">environment</span><span class="p">)</span>
-
-    <span class="c">#delete the old copy of the .plist</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
-    
-    <span class="c">#write our new one in its place</span>
-    <span class="n">plistlib</span><span class="o">.</span><span class="n">writePlist</span><span class="p">(</span><span class="n">plist</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></code></pre></div>
-
-<p>This code is fairly straightforward, except that we haven&#39;t implemented editPlist(plist,environment) yet. Lets do that next:</p>
-
-<div class="highlight"><pre><code class="language-python" data-lang="python"><span class="k">def</span> <span class="nf">editPlist</span><span class="p">(</span><span class="n">plist</span><span class="p">,</span> <span class="n">env</span><span class="p">):</span>
-
-    <span class="n">fmt</span> <span class="o">=</span> <span class="s">&#39;https://{}.rockshassa.com&#39;</span>
-
-    <span class="k">if</span> <span class="n">env</span> <span class="o">==</span> <span class="s">&#39;Dev&#39;</span><span class="p">:</span>
-        <span class="n">server</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;dev&#39;</span><span class="p">)</span>
-        <span class="n">port</span> <span class="o">=</span> <span class="mi">443</span>
-    <span class="k">elif</span> <span class="n">env</span> <span class="o">==</span> <span class="s">&#39;Staging&#39;</span><span class="p">:</span>
-        <span class="n">server</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;staging&#39;</span><span class="p">)</span>
-        <span class="n">port</span> <span class="o">=</span> <span class="mi">9001</span>
-    <span class="k">elif</span> <span class="n">env</span> <span class="o">==</span> <span class="s">&#39;Production&#39;</span><span class="p">:</span>
-        <span class="n">server</span> <span class="o">=</span> <span class="n">fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&#39;prod&#39;</span><span class="p">)</span>
-        <span class="n">port</span> <span class="o">=</span> <span class="mi">123</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">exit</span><span class="p">(</span><span class="s">&#39;invalid environment specified: &#39;</span> <span class="o">+</span> <span class="n">env</span><span class="p">)</span>
-    
-    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">plist</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;ServerURL&#39;</span><span class="p">:</span>
-            <span class="n">plist</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">server</span>
-        <span class="k">elif</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;Port&#39;</span><span class="p">:</span>
-            <span class="n">plist</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">port</span></code></pre></div>
-
-<p>This performs the edit of the plist according to the environment parameter we provided when invoking the script. If we passed in an unrecognized parameter (or <em>no</em> parameter), the script will abort, providing an explanation why. </p>
-
-<h2>putting it all together</h2>
-
-<p>A full gist of the python script, with more verbose logging is available <a href="https://gist.github.com/rockshassa/b45edf149479b357c57f">here</a>. The additional logging is useful when viewing console logs from Jenkins. Now, all we need to do is invoke this script before running our xcodebuild command. </p>
-
-<p>The invocation and subsequent output of the gist script should look like so:</p>
-
-<p><img src="/assets/2015-06-27/plistlogging.png" alt="xcodeplist"></p>
-
-<p>And thats it! </p>
-
-<p>This example is is a simple one, but method behind it can scale to handle other kinds of configuration information too. I&#39;ve used it successfully to impement configs for feature toggles, URLs, ports, branding information, API keys, and even request headers. </p>
-
-<p>After some practice, I hope you&#39;ll find that abstracting out configuration data in this way leads to more flexible, maintainable, and testable applications. </p>
-
-<p><strong><em>full gist</em></strong></p>
-
-<script src="https://gist.github.com/b45edf149479b357c57f.js"> </script>
+ -->
 
   </div>
   
@@ -242,7 +128,7 @@
 
 <div class="pagination">
   
-    <a class="pagination-item older" href="/page3">Older</a>
+    <span class="pagination-item older">Older</span>
   
   
     

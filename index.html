@@ -1,37 +1,164 @@
----
-layout: default
-title: Home
----
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nick Galasso</title>
+<meta name="description" content="Nick Galasso — staff iOS engineer in New York City. Shipping consumer apps since 2012; building with and on Claude.">
+<meta property="og:title" content="Nick Galasso">
+<meta property="og:description" content="Staff iOS engineer in New York City. Shipping consumer apps since 2012; building with and on Claude.">
+<meta property="og:url" content="https://rockshassa.com">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23E14E2A'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-weight='bold' font-size='34' fill='white' text-anchor='middle'%3ENG%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #FAF8F5;
+    --ink: #20222B;
+    --muted: #6E7076;
+    --line: #E2DED7;
+    --accent: #E14E2A;
+    --card: #F1EEE9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #16171C;
+      --ink: #E8E6E1;
+      --muted: #979AA4;
+      --line: #2E3038;
+      --accent: #FF6A45;
+      --card: #1E2026;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+    font-size: 1.02rem;
+    line-height: 1.65;
+    padding: clamp(2.5rem, 8vh, 6rem) 1.25rem 4rem;
+  }
+  main { max-width: 40rem; margin: 0 auto; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin: 0 0 1rem;
+  }
+  h1 {
+    font-family: "Bricolage Grotesque", Georgia, serif;
+    font-weight: 800;
+    font-size: clamp(2.6rem, 9vw, 4rem);
+    line-height: 1.02;
+    letter-spacing: -0.02em;
+    margin: 0 0 1.4rem;
+  }
+  h1 .dot { color: var(--accent); }
+  .bio { max-width: 36rem; margin: 0 0 0.6rem; }
+  .bio strong { font-weight: 600; }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem 1.6rem;
+    margin: 1.6rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.85rem;
+  }
+  .links a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent);
+    padding-bottom: 1px;
+  }
+  .links a:hover, .links a:focus-visible { color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  h2 {
+    font-family: "Bricolage Grotesque", Georgia, serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    letter-spacing: -0.01em;
+    margin: 3.2rem 0 1rem;
+  }
+  .work { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.9rem; }
+  .work li {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 0.85rem 1.1rem;
+  }
+  .work .name {
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.85rem;
+    font-weight: 500;
+  }
+  .work .name a { color: var(--accent); text-decoration: none; }
+  .work .name a:hover, .work .name a:focus-visible { text-decoration: underline; }
+  .work p { margin: 0.15rem 0 0; font-size: 0.95rem; color: var(--muted); }
+  .career {
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.8rem;
+    color: var(--muted);
+    line-height: 2;
+    margin: 0;
+    max-width: 38rem;
+  }
+  .career b { color: var(--ink); font-weight: 500; }
+  footer {
+    margin-top: 3.5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">New York City · Staff iOS Engineer</p>
+  <h1>Nick Galasso<span class="dot">.</span></h1>
+  <p class="bio">I've been shipping consumer iOS apps since 2012 — <strong>GrubHub</strong>, <strong>Wayfair</strong>, <strong>The Points Guy</strong>, and today <strong>Ro</strong>, where I own delivery of the patient-facing iOS app and led its migration from legacy Redux to native SwiftUI.</p>
+  <p class="bio">These days most of my commits are co-authored with Claude: I build products on the Claude API and extend Claude Code itself.</p>
+  <ul class="links">
+    <li><a href="https://github.com/rockshassa">GitHub</a></li>
+    <li><a href="mailto:nick@rockshassa.com">nick@rockshassa.com</a></li>
+    <!-- TODO: add LinkedIn once URL confirmed -->
+  </ul>
 
-<div class="posts">
-  {% for post in paginator.posts %}
-  <div class="post">
-    <h1 class="post-title">
-      <a href="{{ post.url }}">
-        {{ post.title }}
-      </a>
-    </h1>
+  <h2>Recent work</h2>
+  <ul class="work">
+    <li>
+      <span class="name"><a href="https://github.com/anthropics/claude-plugins-official/compare/main...rockshassa:claude-plugins-official:main">imessage-guardrails</a></span>
+      <p>Hardened fork of Anthropic's official iMessage plugin for Claude Code — self-chat-only replies, two-way message feed, chat.db race fix.</p>
+    </li>
+    <li>
+      <span class="name">qansei</span>
+      <p>Swift macOS + iOS product built on the Claude API: menu-bar Mac app → Cloud Functions → Claude → push → iOS.</p>
+    </li>
+    <li>
+      <span class="name">rill</span>
+      <p>iOS 26 patient-recovery app — WidgetKit, scripted XCUITest demo flows, pre-commit hooks that keep clinical data out of git by construction.</p>
+    </li>
+    <li>
+      <span class="name">MTAWatch</span>
+      <p>watchOS transit departures for the MTA.</p>
+    </li>
+  </ul>
 
-    <span class="post-date">{{ post.date | date_to_string }}</span>
+  <h2>Career</h2>
+  <p class="career"><b>Ro</b> 2024–now · <b>Red Ventures</b> 2023 · <b>Floor</b> 2022 · <b>SEVENROOMS</b> 2020 · <b>Wayfair</b> 2019 · <b>Airtime</b> 2016 · <b>Animoto</b> 2015 · <b>GrubHub</b> 2014 · <b>Daily Burn</b> 2013 · <b>Everyday Health</b> 2012</p>
 
-    {{ post.content }}
-  </div>
-  {% endfor %}
-</div>
-
-<div class="pagination">
-  {% if paginator.next_page %}
-    <a class="pagination-item older" href="{{ site.baseurl }}page{{paginator.next_page}}">Older</a>
-  {% else %}
-    <span class="pagination-item older">Older</span>
-  {% endif %}
-  {% if paginator.previous_page %}
-    {% if paginator.page == 2 %}
-      <a class="pagination-item newer" href="{{ site.baseurl }}">Newer</a>
-    {% else %}
-      <a class="pagination-item newer" href="{{ site.baseurl }}page{{paginator.previous_page}}">Newer</a>
-    {% endif %}
-  {% else %}
-    <span class="pagination-item newer">Newer</span>
-  {% endif %}
-</div>
+  <footer>nick@rockshassa.com · github.com/rockshassa</footer>
+</main>
+</body>
+</html>

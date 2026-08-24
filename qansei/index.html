@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Qansei — case study</title>
+<meta name="description" content="Case study: Qansei, an emotional-intelligence assistant for iMessage — piping highly sensitive data through Claude without ever storing it.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23E14E2A'/%3E%3Ctext x='32' y='44' font-family='Georgia,serif' font-weight='bold' font-size='34' fill='white' text-anchor='middle'%3ENG%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --ground: #FAF8F5;
+    --ink: #20222B;
+    --muted: #6E7076;
+    --line: #E2DED7;
+    --accent: #E14E2A;
+    --card: #F1EEE9;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --ground: #16171C;
+      --ink: #E8E6E1;
+      --muted: #979AA4;
+      --line: #2E3038;
+      --accent: #FF6A45;
+      --card: #1E2026;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "Public Sans", "Helvetica Neue", Arial, sans-serif;
+    font-size: 1.02rem;
+    line-height: 1.65;
+    padding: clamp(2.5rem, 7vh, 5rem) 1.25rem 4rem;
+  }
+  main { max-width: 42rem; margin: 0 auto; }
+  .back {
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.8rem;
+    text-decoration: none;
+    color: var(--muted);
+  }
+  .back:hover, .back:focus-visible { color: var(--accent); }
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 500;
+    margin: 2.2rem 0 0.8rem;
+  }
+  h1 {
+    font-family: "Bricolage Grotesque", Georgia, serif;
+    font-weight: 800;
+    font-size: clamp(2.2rem, 7vw, 3.2rem);
+    line-height: 1.04;
+    letter-spacing: -0.02em;
+    margin: 0 0 1rem;
+  }
+  .standfirst { font-size: 1.12rem; color: var(--muted); margin: 0 0 2.2rem; }
+  h2 {
+    font-family: "Bricolage Grotesque", Georgia, serif;
+    font-weight: 700;
+    font-size: 1.35rem;
+    letter-spacing: -0.01em;
+    margin: 2.6rem 0 0.8rem;
+  }
+  p { margin: 0 0 1rem; }
+  ul { margin: 0 0 1rem; padding-left: 1.25rem; }
+  li { margin-bottom: 0.5rem; }
+  li::marker { color: var(--accent); }
+  strong { font-weight: 600; }
+  .diagram {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 1.1rem 1.3rem;
+    overflow-x: auto;
+    margin: 1.4rem 0;
+  }
+  .diagram pre {
+    margin: 0;
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.8rem;
+    line-height: 1.7;
+  }
+  .diagram .a { color: var(--accent); }
+  code {
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.86em;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 0.08em 0.35em;
+  }
+  footer {
+    margin-top: 3.5rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--line);
+    font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.05em;
+  }
+  footer a { color: var(--muted); }
+  footer a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <a class="back" href="/">← rockshassa.com</a>
+  <p class="eyebrow">Case study</p>
+  <h1>Qansei</h1>
+  <p class="standfirst">An emotional-intelligence assistant for iMessage — and an exercise in piping some of the most sensitive data a person has through an LLM without ever storing it.</p>
+
+  <p>Qansei watches <em>one</em> conversation you choose — typically your partner's — and helps you show up better in it. A menu-bar Mac app notices new messages, Claude reads the emotional weather, and your iPhone gets a nudge when something deserves more attention than you gave it, plus a daily summary of how the conversation went. It's a complete product, not a demo: Firebase auth, Stripe subscriptions, a signed and notarized Mac DMG, and a companion iOS app on the App Store.</p>
+
+  <h2>Architecture</h2>
+  <div class="diagram"><pre>
+┌─────────────────┐   HTTPS + Firebase ID token   ┌─────────────────────┐
+│  Mac menu-bar   │ ────────────────────────────▶ │   Cloud Function    │
+│  app (SwiftUI/  │      messages, transient      │   (TypeScript)      │
+│  AppKit)        │                               │         │           │
+│  · chat.db, RO  │                               │         ▼           │
+│  · FSEvents     │                               │  <span class="a">Claude Haiku 4.5</span>   │
+└─────────────────┘                               │         │           │
+                                                  │   JSON verdict      │
+┌─────────────────┐        FCM push               │         │           │
+│  iOS companion  │ ◀─────────────────────────────│  alert metadata     │
+│  (App Store)    │                               │  → Firestore        │
+└─────────────────┘                               └─────────────────────┘</pre></div>
+  <p>Both apps share a local Swift package (<code>QanseiShared</code>) for models and API plumbing; the analysis prompt lives server-side so it can evolve without shipping app updates.</p>
+
+  <h2>The privacy contract</h2>
+  <p>The design premise: the user is trusting the product with their most personal conversation, so every layer is built to hold as little as possible.</p>
+  <ul>
+    <li><strong>Single-conversation scope.</strong> Only the selected chat is ever read for content; the conversation picker sees metadata only. Access to <code>chat.db</code> is read-only — the app cannot send iMessages, and Full Disk Access must be granted by hand.</li>
+    <li><strong>Messages are transient.</strong> They travel to the Cloud Function for analysis and are never written to Firestore or any database. What persists is alert metadata and daily summaries written in pattern language — never message content.</li>
+    <li><strong>Rules-enforced boundaries.</strong> Alerts are writable only by the Cloud Function; users can't edit their own history. Internal context profiles used to improve future analysis are read-blocked at the Firestore-rules layer — not even the account owner can fetch them.</li>
+    <li><strong>Secrets stay out of the codebase.</strong> The Anthropic API key lives in Google Cloud Secret Manager, injected at function runtime.</li>
+  </ul>
+
+  <h2>Engineering notes</h2>
+  <ul>
+    <li><strong>chat.db is hostile territory.</strong> macOS treats the Messages database as its own — reads race WAL checkpoints, and transient SQLite errors are expected behavior to tolerate, not bugs to fix. The monitor is built around that reality.</li>
+    <li><strong>Right-sized model.</strong> Tone classification on a message window doesn't need a frontier model — Haiku 4.5 keeps the always-on loop fast and cheap. The function short-circuits entirely on empty days rather than paying for a no-op summary.</li>
+    <li><strong>Strict output contract.</strong> Claude's verdict must parse as JSON; failures are logged with truncated raw output for diagnosis rather than silently dropped.</li>
+    <li><strong>Two distribution models, one codebase.</strong> The Mac app can't be sandboxed (it needs <code>chat.db</code>), so it ships as a notarized DMG with its own update path, while the iOS companion lives on the App Store — with Stripe rather than IAP handling the subscription.</li>
+  </ul>
+
+  <h2>Built with Claude</h2>
+  <p>Qansei was built by one engineer with Claude Code as the pair — roughly ninety percent of commits are co-authored. Claude also runs in production as the analysis engine, which made the privacy contract a design constraint on both sides: the tool that helped write the system is the same one the system must be careful with.</p>
+
+  <footer><a href="/">Nick Galasso</a> · nick@rockshassa.com · <a href="https://github.com/rockshassa">github.com/rockshassa</a></footer>
+</main>
+</body>
+</html>
